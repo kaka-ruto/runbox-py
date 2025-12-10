@@ -105,6 +105,7 @@ class Client:
         entrypoint: str,
         env: dict[str, str] | None = None,
         timeout: int | None = None,
+        new_dependencies: list[str] | None = None,
     ) -> RunResult:
         """
         Run code in a container that was set up via setup().
@@ -115,9 +116,10 @@ class Client:
             entrypoint: File to run
             env: Runtime environment variables
             timeout: Execution timeout in seconds
+            new_dependencies: New dependencies to install before running
         
         Returns:
-            RunResult with execution output
+            RunResult with execution output and optional packages
         """
         # Normalize files
         normalized_files = []
@@ -137,6 +139,8 @@ class Client:
             payload["env"] = env
         if timeout is not None:
             payload["timeout"] = timeout
+        if new_dependencies is not None:
+            payload["new_dependencies"] = new_dependencies
         
         response = self._post("/v1/run", payload)
         return RunResult(**response)
@@ -302,6 +306,7 @@ class AsyncClient:
         entrypoint: str,
         env: dict[str, str] | None = None,
         timeout: int | None = None,
+        new_dependencies: list[str] | None = None,
     ) -> RunResult:
         """Run code in a container that was set up via setup()."""
         normalized_files = []
@@ -321,6 +326,8 @@ class AsyncClient:
             payload["env"] = env
         if timeout is not None:
             payload["timeout"] = timeout
+        if new_dependencies is not None:
+            payload["new_dependencies"] = new_dependencies
         
         response = await self._post("/v1/run", payload)
         return RunResult(**response)

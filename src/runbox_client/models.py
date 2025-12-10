@@ -37,6 +37,7 @@ class RunResult(BaseModel):
     stderr: str
     execution_time_ms: int
     timeout_exceeded: bool = False
+    packages: dict[str, str] | None = None
 
     @property
     def failed(self) -> bool:
