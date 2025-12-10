@@ -2,7 +2,37 @@
 
 import pytest
 
-from runbox_client.models import RunResult, HealthResult, FileInput
+from runbox_client.models import (
+    RunResult,
+    SetupResult,
+    EnvironmentSnapshot,
+    HealthResult,
+    FileInput,
+)
+
+
+class TestSetupResult:
+    """Tests for SetupResult model."""
+    
+    def test_creates_setup_result(self):
+        """SetupResult can be created with environment snapshot."""
+        result = SetupResult(
+            container_id="runbox-test-123-python",
+            cached=False,
+            environment_snapshot=EnvironmentSnapshot(
+                os_name="debian",
+                os_version="12",
+                runtime_name="python",
+                runtime_version="3.11.6",
+                packages={"pip": "23.0.1", "requests": "2.31.0"},
+            ),
+        )
+        
+        assert result.container_id == "runbox-test-123-python"
+        assert result.cached is False
+        assert result.environment_snapshot.os_name == "debian"
+        assert result.environment_snapshot.runtime_version == "3.11.6"
+        assert result.environment_snapshot.packages["pip"] == "23.0.1"
 
 
 class TestRunResult:
@@ -16,8 +46,6 @@ class TestRunResult:
             stdout="Hello\n",
             stderr="",
             execution_time_ms=100,
-            container_id="runbox-test-python",
-            cached=False,
             timeout_exceeded=False,
         )
         
@@ -25,6 +53,7 @@ class TestRunResult:
         assert result.failed is False
         assert result.exit_code == 0
         assert result.stdout == "Hello\n"
+        assert result.timed_out is False
     
     def test_failed_result(self):
         """RunResult correctly identifies failure."""
@@ -34,8 +63,6 @@ class TestRunResult:
             stdout="",
             stderr="Error",
             execution_time_ms=50,
-            container_id="runbox-test-python",
-            cached=False,
             timeout_exceeded=False,
         )
         
@@ -51,8 +78,6 @@ class TestRunResult:
             stdout="",
             stderr="Timeout",
             execution_time_ms=30000,
-            container_id="runbox-test-python",
-            cached=False,
             timeout_exceeded=True,
         )
         
@@ -76,8 +101,7 @@ class TestHealthResult:
     
     def test_creates_health_result(self):
         """HealthResult can be created."""
-        health = HealthResult(status="healthy", version="0.1.0")
+        health = HealthResult(status="healthy", version="1.0.0")
         
         assert health.status == "healthy"
-        assert health.version == "0.1.0"
-
+        assert health.version == "1.0.0"

@@ -10,6 +10,24 @@ class FileInput(BaseModel):
     content: str
 
 
+class EnvironmentSnapshot(BaseModel):
+    """Environment information from a container."""
+    
+    os_name: str
+    os_version: str
+    runtime_name: str
+    runtime_version: str
+    packages: dict[str, str]
+
+
+class SetupResult(BaseModel):
+    """Result of container setup."""
+    
+    container_id: str
+    cached: bool
+    environment_snapshot: EnvironmentSnapshot
+
+
 class RunResult(BaseModel):
     """Result of code execution."""
     
@@ -18,8 +36,6 @@ class RunResult(BaseModel):
     stdout: str
     stderr: str
     execution_time_ms: int
-    container_id: str
-    cached: bool
     timeout_exceeded: bool = False
 
     @property
@@ -44,4 +60,3 @@ class DeleteResult(BaseModel):
     """Result of container deletion."""
     
     deleted: list[str]
-

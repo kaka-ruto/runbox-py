@@ -21,6 +21,11 @@ class AuthenticationError(RunboxError):
     pass
 
 
+class NotFoundError(RunboxError):
+    """Not found error (404)."""
+    pass
+
+
 class ValidationError(RunboxError):
     """Validation error (400)."""
     
@@ -29,7 +34,6 @@ class ValidationError(RunboxError):
         self.details = details
 
 
-class ExecutionError(RunboxError):
-    """Execution error (500)."""
+class RunError(RunboxError):
+    """Run error (500)."""
     pass
-

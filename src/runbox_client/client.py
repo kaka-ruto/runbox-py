@@ -9,10 +9,17 @@ from runbox_client.exceptions import (
     ConfigurationError,
     ConnectionError,
     AuthenticationError,
+    NotFoundError,
     ValidationError,
-    ExecutionError,
+    RunError,
 )
-from runbox_client.models import RunResult, HealthResult, DeleteResult, FileInput
+from runbox_client.models import (
+    RunResult,
+    SetupResult,
+    HealthResult,
+    DeleteResult,
+    FileInput,
+)
 
 
 class Client:
@@ -51,29 +58,63 @@ class Client:
         if not self.api_key:
             raise ConfigurationError("API key is required")
     
-    def run(
+    def setup(
         self,
         identifier: str,
         language: str,
-        files: list[dict[str, str] | FileInput],
-        entrypoint: str,
         env: dict[str, str] | None = None,
         timeout: int | None = None,
         memory: str | None = None,
         network_allow: list[str] | None = None,
-    ) -> RunResult:
+    ) -> SetupResult:
         """
-        Execute code in a sandboxed container.
+        Set up a container and get environment information.
         
         Args:
             identifier: Unique identifier for container reuse
             language: Programming language (python, ruby, shell)
-            files: List of files to write
-            entrypoint: File to execute
-            env: Environment variables
-            timeout: Execution timeout in seconds
+            env: Environment variables to set
+            timeout: Default timeout in seconds
             memory: Memory limit (e.g., "256m")
             network_allow: Allowed network destinations
+        
+        Returns:
+            SetupResult with container_id and environment_snapshot
+        """
+        payload: dict[str, Any] = {
+            "identifier": identifier,
+            "language": language,
+        }
+        
+        if env:
+            payload["env"] = env
+        if timeout is not None:
+            payload["timeout"] = timeout
+        if memory is not None:
+            payload["memory"] = memory
+        if network_allow is not None:
+            payload["network_allow"] = network_allow
+        
+        response = self._post("/v1/setup", payload)
+        return SetupResult(**response)
+    
+    def run(
+        self,
+        container_id: str,
+        files: list[dict[str, str] | FileInput],
+        entrypoint: str,
+        env: dict[str, str] | None = None,
+        timeout: int | None = None,
+    ) -> RunResult:
+        """
+        Run code in a container that was set up via setup().
+        
+        Args:
+            container_id: Container ID from setup() response
+            files: List of files to write
+            entrypoint: File to run
+            env: Runtime environment variables
+            timeout: Execution timeout in seconds
         
         Returns:
             RunResult with execution output
@@ -87,8 +128,7 @@ class Client:
                 normalized_files.append(f)
         
         payload: dict[str, Any] = {
-            "identifier": identifier,
-            "language": language,
+            "container_id": container_id,
             "files": normalized_files,
             "entrypoint": entrypoint,
         }
@@ -97,10 +137,6 @@ class Client:
             payload["env"] = env
         if timeout is not None:
             payload["timeout"] = timeout
-        if memory is not None:
-            payload["memory"] = memory
-        if network_allow is not None:
-            payload["network_allow"] = network_allow
         
         response = self._post("/v1/run", payload)
         return RunResult(**response)
@@ -167,6 +203,10 @@ class Client:
         if response.status_code == 401:
             raise AuthenticationError("Invalid API key")
         
+        if response.status_code == 404:
+            data = response.json()
+            raise NotFoundError(data.get("detail", "Container not found"))
+        
         if response.status_code == 400:
             data = response.json()
             raise ValidationError(data.get("detail", "Validation error"), details=data)
@@ -177,7 +217,7 @@ class Client:
         
         if response.status_code >= 500:
             data = response.json() if response.content else {}
-            raise ExecutionError(data.get("detail", "Execution failed"))
+            raise RunError(data.get("detail", "Run failed"))
         
         return response.json()
     
@@ -228,30 +268,19 @@ class AsyncClient:
         if not self.api_key:
             raise ConfigurationError("API key is required")
     
-    async def run(
+    async def setup(
         self,
         identifier: str,
         language: str,
-        files: list[dict[str, str] | FileInput],
-        entrypoint: str,
         env: dict[str, str] | None = None,
         timeout: int | None = None,
         memory: str | None = None,
         network_allow: list[str] | None = None,
-    ) -> RunResult:
-        """Execute code in a sandboxed container."""
-        normalized_files = []
-        for f in files:
-            if isinstance(f, FileInput):
-                normalized_files.append({"path": f.path, "content": f.content})
-            else:
-                normalized_files.append(f)
-        
+    ) -> SetupResult:
+        """Set up a container and get environment information."""
         payload: dict[str, Any] = {
             "identifier": identifier,
             "language": language,
-            "files": normalized_files,
-            "entrypoint": entrypoint,
         }
         
         if env:
@@ -262,6 +291,36 @@ class AsyncClient:
             payload["memory"] = memory
         if network_allow is not None:
             payload["network_allow"] = network_allow
+        
+        response = await self._post("/v1/setup", payload)
+        return SetupResult(**response)
+    
+    async def run(
+        self,
+        container_id: str,
+        files: list[dict[str, str] | FileInput],
+        entrypoint: str,
+        env: dict[str, str] | None = None,
+        timeout: int | None = None,
+    ) -> RunResult:
+        """Run code in a container that was set up via setup()."""
+        normalized_files = []
+        for f in files:
+            if isinstance(f, FileInput):
+                normalized_files.append({"path": f.path, "content": f.content})
+            else:
+                normalized_files.append(f)
+        
+        payload: dict[str, Any] = {
+            "container_id": container_id,
+            "files": normalized_files,
+            "entrypoint": entrypoint,
+        }
+        
+        if env:
+            payload["env"] = env
+        if timeout is not None:
+            payload["timeout"] = timeout
         
         response = await self._post("/v1/run", payload)
         return RunResult(**response)
@@ -312,6 +371,10 @@ class AsyncClient:
         if response.status_code == 401:
             raise AuthenticationError("Invalid API key")
         
+        if response.status_code == 404:
+            data = response.json()
+            raise NotFoundError(data.get("detail", "Container not found"))
+        
         if response.status_code == 400:
             data = response.json()
             raise ValidationError(data.get("detail", "Validation error"), details=data)
@@ -322,7 +385,7 @@ class AsyncClient:
         
         if response.status_code >= 500:
             data = response.json() if response.content else {}
-            raise ExecutionError(data.get("detail", "Execution failed"))
+            raise RunError(data.get("detail", "Run failed"))
         
         return response.json()
     
@@ -335,4 +398,3 @@ class AsyncClient:
     
     async def __aexit__(self, *args: Any) -> None:
         await self.close()
-
