@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2025-12-10
+
+### Added
+
+- **`new_dependencies` parameter** in `run()` method: Install dependencies on-the-fly before code execution
+  - Python: `["requests==2.31.0", "pytest"]`
+  - Ruby: `["rake", "rspec"]`
+  - Shell: `["curl", "jq", "git"]` (uses apk)
+- **`packages` field** in `RunResult`: Returns updated package list when dependencies are installed
+  - Only included when `new_dependencies` were provided
+  - Dictionary of package names to versions
+
+### Example
+
+```python
+# Install dependencies and run code
+result = client.run(
+    container_id=container_id,
+    files=[{"path": "main.py", "content": "import requests; print(requests.__version__)"}],
+    entrypoint="main.py",
+    new_dependencies=["requests==2.31.0"]
+)
+
+print(result.packages)  # {"pip": "23.0.1", "requests": "2.31.0", ...}
+```
+
 ## [1.0.0] - 2025-12-10
 
 ### Breaking Changes

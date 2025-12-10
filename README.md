@@ -114,6 +114,40 @@ print(result.execution_time_ms) # => 42
 print(result.timed_out)        # => False
 ```
 
+### Installing Dependencies On-The-Fly
+
+Install new dependencies before running code:
+
+```python
+# Python example
+result = client.run(
+    container_id=container_id,
+    files=[{"path": "main.py", "content": "import requests; print(requests.__version__)"}],
+    entrypoint="main.py",
+    new_dependencies=["requests==2.31.0", "pytest"]
+)
+
+print(result.packages)  # => {"pip": "23.0.1", "requests": "2.31.0", "pytest": "7.4.0", ...}
+
+# Ruby example
+result = client.run(
+    container_id=container_id,
+    files=[{"path": "main.rb", "content": "require 'rake'; puts Rake::VERSION"}],
+    entrypoint="main.rb",
+    new_dependencies=["rake", "rspec"]
+)
+
+# Shell example (uses apk)
+result = client.run(
+    container_id=container_id,
+    files=[{"path": "script.sh", "content": "#!/bin/sh\ncurl --version"}],
+    entrypoint="script.sh",
+    new_dependencies=["curl", "jq", "git"]
+)
+```
+
+**Note:** The `packages` field is only included in the result when `new_dependencies` are provided.
+
 ### Async Support
 
 ```python
