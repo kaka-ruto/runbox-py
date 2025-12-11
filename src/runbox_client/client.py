@@ -102,7 +102,7 @@ class Client:
         self,
         container_id: str,
         files: list[dict[str, str] | FileInput],
-        entrypoint: str,
+        run_command: str,
         env: dict[str, str] | None = None,
         timeout: int | None = None,
         new_dependencies: list[str] | None = None,
@@ -113,7 +113,7 @@ class Client:
         Args:
             container_id: Container ID from setup() response
             files: List of files to write
-            entrypoint: File to run
+            run_command: Command to execute
             env: Runtime environment variables
             timeout: Execution timeout in seconds
             new_dependencies: New dependencies to install before running
@@ -132,7 +132,7 @@ class Client:
         payload: dict[str, Any] = {
             "container_id": container_id,
             "files": normalized_files,
-            "entrypoint": entrypoint,
+            "run_command": run_command,
         }
         
         if env:
@@ -303,7 +303,7 @@ class AsyncClient:
         self,
         container_id: str,
         files: list[dict[str, str] | FileInput],
-        entrypoint: str,
+        run_command: str,
         env: dict[str, str] | None = None,
         timeout: int | None = None,
         new_dependencies: list[str] | None = None,
@@ -319,7 +319,7 @@ class AsyncClient:
         payload: dict[str, Any] = {
             "container_id": container_id,
             "files": normalized_files,
-            "entrypoint": entrypoint,
+            "run_command": run_command,
         }
         
         if env:

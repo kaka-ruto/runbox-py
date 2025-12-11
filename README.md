@@ -37,7 +37,7 @@ print(setup.environment_snapshot.packages["requests"])  # => "2.31.0"
 result = client.run(
     container_id=setup.container_id,
     files=[{"path": "main.py", "content": "print('Hello!')"}],
-    entrypoint="main.py"
+    run_command="python main.py"
 )
 
 print(result.stdout)  # => "Hello!\n"
@@ -101,7 +101,7 @@ print(env.packages)         # => {"pip": "23.0.1", "requests": "2.31.0", ...}
 result = client.run(
     container_id="runbox-session-123-python",
     files=[{"path": "main.py", "content": "print('Hello!')"}],
-    entrypoint="main.py",
+    run_command="python main.py",
     env={"DEBUG": "true"},  # Optional: runtime environment variables
     timeout=30              # Optional: execution timeout in seconds
 )
@@ -123,7 +123,7 @@ Install new dependencies before running code:
 result = client.run(
     container_id=container_id,
     files=[{"path": "main.py", "content": "import requests; print(requests.__version__)"}],
-    entrypoint="main.py",
+    run_command="python main.py",
     new_dependencies=["requests==2.31.0", "pytest"]
 )
 
@@ -133,7 +133,7 @@ print(result.packages)  # => {"pip": "23.0.1", "requests": "2.31.0", "pytest": "
 result = client.run(
     container_id=container_id,
     files=[{"path": "main.rb", "content": "require 'rake'; puts Rake::VERSION"}],
-    entrypoint="main.rb",
+    run_command="ruby main.rb",
     new_dependencies=["rake", "rspec"]
 )
 
@@ -141,7 +141,7 @@ result = client.run(
 result = client.run(
     container_id=container_id,
     files=[{"path": "script.sh", "content": "#!/bin/sh\ncurl --version"}],
-    entrypoint="script.sh",
+    run_command="sh script.sh",
     new_dependencies=["curl", "jq", "git"]
 )
 ```
@@ -166,7 +166,7 @@ async def main():
         result = await client.run(
             container_id=setup.container_id,
             files=[{"path": "main.py", "content": "print('Hello!')"}],
-            entrypoint="main.py"
+            run_command="python main.py"
         )
         
         print(result.stdout)
@@ -208,14 +208,14 @@ Set up a container and get environment information.
 - `cached`: Whether container was reused
 - `environment_snapshot`: Environment information (OS, runtime, packages)
 
-### `client.run(container_id, files, entrypoint, **options)`
+### `client.run(container_id, files, run_command, **options)`
 
 Run code in a container that was set up via `setup()`.
 
 **Parameters:**
 - `container_id` (str, required): Container ID from `setup()` response
 - `files` (list[dict], required): Files to write before running
-- `entrypoint` (str, required): File to run
+- `run_command` (str, required): Command to run
 - `env` (dict, optional): Runtime environment variables
 - `timeout` (int, optional): Execution timeout in seconds
 
@@ -244,7 +244,7 @@ try:
     result = client.run(
         container_id=setup.container_id,
         files=[{"path": "main.py", "content": "print('hi')"}],
-        entrypoint="main.py"
+        run_command="python main.py"
     )
 except AuthenticationError:
     print("Invalid API key")
