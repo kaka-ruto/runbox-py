@@ -30,13 +30,16 @@ async def main():
         
         # Test 2: Python Execution
         print("\n2. Python Execution:")
-        result = await client.run(
+        python_setup = await client.setup(
             identifier="py-client-test",
             language="python",
+        )
+        result = await client.run(
+            container_id=python_setup.container_id,
             files=[
                 {"path": "main.py", "content": "print('Hello from Python client!')"}
             ],
-            entrypoint="main.py"
+            run_command="python main.py"
         )
         print(f"   Success: {result.success}")
         print(f"   Output: {result.stdout.strip()}")
@@ -45,26 +48,32 @@ async def main():
         
         # Test 3: Ruby Execution
         print("\n3. Ruby Execution:")
-        result = await client.run(
+        ruby_setup = await client.setup(
             identifier="py-client-test",
             language="ruby",
+        )
+        result = await client.run(
+            container_id=ruby_setup.container_id,
             files=[
                 {"path": "main.rb", "content": "puts 'Hello from Ruby!'"}
             ],
-            entrypoint="main.rb"
+            run_command="ruby main.rb"
         )
         print(f"   Success: {result.success}")
         print(f"   Output: {result.stdout.strip()}")
         
         # Test 4: Shell Execution
         print("\n4. Shell Execution:")
-        result = await client.run(
+        shell_setup = await client.setup(
             identifier="py-client-test",
             language="shell",
+        )
+        result = await client.run(
+            container_id=shell_setup.container_id,
             files=[
                 {"path": "main.sh", "content": "echo 'Hello from Shell!'"}
             ],
-            entrypoint="main.sh"
+            run_command="sh main.sh"
         )
         print(f"   Success: {result.success}")
         print(f"   Output: {result.stdout.strip()}")
