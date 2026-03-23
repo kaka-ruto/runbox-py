@@ -65,7 +65,7 @@ class TestClient:
         result = client.run(
             container_id="runbox-test-123-python",
             files=[{"path": "main.py", "content": "print('Hello!')"}],
-            entrypoint="main.py",
+            run_command="python main.py",
         )
         
         assert result.success is True
@@ -92,7 +92,7 @@ class TestClient:
         result = client.run(
             container_id="runbox-test-python",
             files=[{"path": "main.py", "content": "exit(1)"}],
-            entrypoint="main.py",
+            run_command="python main.py",
         )
         
         assert result.success is False
@@ -114,7 +114,7 @@ class TestClient:
             client.run(
                 container_id="runbox-nonexistent-python",
                 files=[{"path": "main.py", "content": "print('hi')"}],
-                entrypoint="main.py",
+                run_command="python main.py",
             )
         
         assert "not found" in str(exc_info.value).lower()
@@ -134,7 +134,7 @@ class TestClient:
             client.run(
                 container_id="runbox-test-python",
                 files=[{"path": "main.py", "content": "print('hi')"}],
-                entrypoint="main.py",
+                run_command="python main.py",
             )
     
     def test_run_raises_on_validation_error(self, httpx_mock: HTTPXMock):
@@ -152,7 +152,7 @@ class TestClient:
             client.run(
                 container_id="runbox-test-python",
                 files=[{"path": "main.py", "content": "..."}],
-                entrypoint="missing.py",
+                run_command="python missing.py",
             )
         
         assert "not found" in str(exc_info.value).lower()
@@ -262,7 +262,7 @@ class TestAsyncClient:
             result = await client.run(
                 container_id="runbox-test-python",
                 files=[{"path": "main.py", "content": "print('Hello!')"}],
-                entrypoint="main.py",
+                run_command="python main.py",
             )
         
         assert result.success is True
