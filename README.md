@@ -1,15 +1,15 @@
 # Runbox Python Client
 
-Official Python client for [Runbox](https://github.com/anywaye/runbox) - a fast, secure API for running code in isolated containers.
+Official Python client for [Runbox](https://github.com/kaka-ruto/runbox) - a fast, secure API for running code in isolated containers.
 
-[![PyPI version](https://badge.fury.io/py/runbox-client.svg)](https://badge.fury.io/py/runbox-client)
-[![CI](https://github.com/anywaye/runbox-py/actions/workflows/ci.yml/badge.svg)](https://github.com/anywaye/runbox-py/actions/workflows/ci.yml)
+[![PyPI version](https://badge.fury.io/py/runbox-py.svg)](https://badge.fury.io/py/runbox-py)
+[![CI](https://github.com/kaka-ruto/runbox-py/actions/workflows/ci.yml/badge.svg)](https://github.com/kaka-ruto/runbox-py/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Installation
 
 ```bash
-pip install runbox-client
+pip install runbox-py
 ```
 
 ## Quick Start

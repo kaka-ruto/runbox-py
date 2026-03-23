@@ -1,5 +1,5 @@
 [project]
-name = "runbox-client"
+name = "runbox-py"
 version = "1.1.1"
 description = "Official Python client for Runbox - secure code execution API"
 readme = "README.md"
@@ -32,10 +32,10 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/anywaye/runbox-py"
-Documentation = "https://github.com/anywaye/runbox-py#readme"
-Repository = "https://github.com/anywaye/runbox-py"
-Changelog = "https://github.com/anywaye/runbox-py/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/kaka-ruto/runbox-py"
+Documentation = "https://github.com/kaka-ruto/runbox-py#readme"
+Repository = "https://github.com/kaka-ruto/runbox-py"
+Changelog = "https://github.com/kaka-ruto/runbox-py/blob/main/CHANGELOG.md"
 
 [build-system]
 requires = ["hatchling"]
