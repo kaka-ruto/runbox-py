@@ -43,19 +43,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
 
-    services:
-      runbox:
-        image: ghcr.io/anywaye/runbox:latest
-        ports:
-          - 8080:8080
-        env:
-          RUNBOX_API_KEY: test-integration-key
-        options: >-
-          --health-cmd "curl -f http://localhost:8080/v1/health || exit 1"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
     steps:
       - uses: actions/checkout@v4
 
@@ -67,6 +54,14 @@ jobs:
 
       - name: Install dependencies
         run: pip install -e .
+
+      - name: Start Runbox service
+        run: |
+          git clone https://github.com/kaka-ruto/runbox.git ../runbox
+          cd ../runbox
+          cp .env.example .env
+          echo "RUNBOX_API_KEY=test-integration-key" >> .env
+          docker compose up -d --build
 
       - name: Wait for Runbox to be ready
         run: |
@@ -84,3 +79,9 @@ jobs:
           RUNBOX_URL: http://localhost:8080
           RUNBOX_API_KEY: test-integration-key
         run: python examples/integration_test.py
+
+      - name: Stop Runbox service
+        if: always()
+        run: |
+          cd ../runbox
+          docker compose down -v
