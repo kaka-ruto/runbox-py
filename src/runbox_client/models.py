@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Dict, Optional
+
 from pydantic import BaseModel
 
 
@@ -39,7 +41,7 @@ class RunResult(BaseModel):
     stderr: str
     execution_time_ms: int
     timeout_exceeded: bool = False
-    packages: dict[str, str] | None = None
+    packages: Optional[Dict[str, str]] = None
 
     @property
     def failed(self) -> bool:

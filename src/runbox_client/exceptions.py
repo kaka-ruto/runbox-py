@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Any, Dict, Optional
+
 
 class RunboxError(Exception):
     """Base exception for Runbox client."""
@@ -31,7 +33,7 @@ class NotFoundError(RunboxError):
 class ValidationError(RunboxError):
     """Validation error (400)."""
     
-    def __init__(self, message: str, details: dict | None = None):
+    def __init__(self, message: str, details: Optional[Dict[str, Any]] = None):
         super().__init__(message)
         self.details = details
 

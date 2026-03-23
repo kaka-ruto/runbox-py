@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import os
-from typing import Any
+from typing import Any, cast
 
 import httpx
 
@@ -225,7 +225,7 @@ class Client:
             data = response.json() if response.content else {}
             raise RunError(data.get("detail", "Run failed"))
         
-        return response.json()
+        return cast(dict[str, Any], response.json())
     
     def close(self) -> None:
         """Close the client."""
@@ -396,7 +396,7 @@ class AsyncClient:
             data = response.json() if response.content else {}
             raise RunError(data.get("detail", "Run failed"))
         
-        return response.json()
+        return cast(dict[str, Any], response.json())
     
     async def close(self) -> None:
         """Close the client."""
