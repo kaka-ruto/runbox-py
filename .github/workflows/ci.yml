@@ -61,6 +61,23 @@ jobs:
           cd ../runbox
           cp .env.example .env
           echo "RUNBOX_API_KEY=test-integration-key" >> .env
+          cat > runbox.yml <<'EOF'
+          server:
+            host: "0.0.0.0"
+            port: 8080
+          auth:
+            enabled: true
+          languages:
+            python:
+              image: "ghcr.io/kaka-ruto/runbox/python:0.1.0"
+              entrypoint_cmd: "python"
+            ruby:
+              image: "ghcr.io/kaka-ruto/runbox/ruby:0.1.0"
+              entrypoint_cmd: "ruby"
+            shell:
+              image: "ghcr.io/kaka-ruto/runbox/shell:0.1.0"
+              entrypoint_cmd: "bash"
+          EOF
           docker compose up -d --build
 
       - name: Wait for Runbox to be ready
