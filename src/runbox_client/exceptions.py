@@ -1,5 +1,7 @@
 """Exceptions for Runbox client."""
 
+from __future__ import annotations
+
 
 class RunboxError(Exception):
     """Base exception for Runbox client."""

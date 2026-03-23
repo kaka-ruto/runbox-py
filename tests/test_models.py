@@ -1,7 +1,5 @@
 """Tests for Runbox client models."""
 
-import pytest
-
 from runbox_client.models import (
     RunResult,
     SetupResult,

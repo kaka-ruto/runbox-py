@@ -1,5 +1,7 @@
 """Data models for Runbox client."""
 
+from __future__ import annotations
+
 from pydantic import BaseModel
 
 
