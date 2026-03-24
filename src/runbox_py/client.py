@@ -7,7 +7,7 @@ from typing import Any, cast
 
 import httpx
 
-from runbox_client.exceptions import (
+from runbox_py.exceptions import (
     ConfigurationError,
     ConnectionError,
     AuthenticationError,
@@ -15,7 +15,7 @@ from runbox_client.exceptions import (
     ValidationError,
     RunError,
 )
-from runbox_client.models import (
+from runbox_py.models import (
     RunResult,
     SetupResult,
     HealthResult,

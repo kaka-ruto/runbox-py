@@ -15,7 +15,7 @@ pip install runbox-py
 ## Quick Start
 
 ```python
-from runbox_client import Client
+from runbox_py import Client
 
 # Create a client
 client = Client(
@@ -54,7 +54,7 @@ export RUNBOX_API_KEY=your-api-key
 ```
 
 ```python
-from runbox_client import Client
+from runbox_py import Client
 
 # Will use environment variables
 client = Client()
@@ -152,7 +152,7 @@ result = client.run(
 
 ```python
 import asyncio
-from runbox_client import AsyncClient
+from runbox_py import AsyncClient
 
 async def main():
     async with AsyncClient(url="http://localhost:8080", api_key="your-api-key") as client:
@@ -230,7 +230,7 @@ Run code in a container that was set up via `setup()`.
 ## Error Handling
 
 ```python
-from runbox_client import (
+from runbox_py import (
     Client,
     AuthenticationError,
     NotFoundError,

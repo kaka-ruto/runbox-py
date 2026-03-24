@@ -7,7 +7,7 @@ Requires a running Runbox server.
 import asyncio
 import os
 import sys
-from runbox_client import AsyncClient
+from runbox_py import AsyncClient
 
 async def main():
     # Configuration from environment

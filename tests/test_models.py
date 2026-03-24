@@ -1,6 +1,6 @@
 """Tests for Runbox client models."""
 
-from runbox_client.models import (
+from runbox_py.models import (
     RunResult,
     SetupResult,
     EnvironmentSnapshot,

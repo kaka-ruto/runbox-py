@@ -3,7 +3,7 @@
 import pytest
 from pytest_httpx import HTTPXMock
 
-from runbox_client import (
+from runbox_py import (
     Client,
     AsyncClient,
     AuthenticationError,

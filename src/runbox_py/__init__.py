@@ -1,14 +1,14 @@
 """Runbox Python Client - Official client for Runbox API."""
 
-from runbox_client.client import Client, AsyncClient
-from runbox_client.models import (
+from runbox_py.client import Client, AsyncClient
+from runbox_py.models import (
     RunResult,
     SetupResult,
     EnvironmentSnapshot,
     HealthResult,
     FileInput,
 )
-from runbox_client.exceptions import (
+from runbox_py.exceptions import (
     RunboxError,
     ConfigurationError,
     ConnectionError,
